@@ -2,30 +2,35 @@ package ir.ayantech.networking
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import ir.ayantech.ayannetworking.api.ApiCache
 import ir.ayantech.ayannetworking.api.AyanApi
 import ir.ayantech.ayannetworking.api.AyanCommonCallStatus
 import ir.ayantech.ayannetworking.api.WrappedPackage
 import ir.ayantech.ayannetworking.helper.dePent
-import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var ayanApi: AyanApi
-    private var ayanCommonCallingStatus = AyanCommonCallStatus {
-        changeStatus { Log.d("AyanLog", it.name) }
-        failure { failure ->
-            Log.d("AyanLog", failure.failureMessage)
-            retryBtn.setOnClickListener { failure.reCallApi() }
-        }
-    }
+
 
     private var wrappedPackage: WrappedPackage<*, GetEndUserInquiryHistoryDetail.Output>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val ayanCommonCallingStatus = AyanCommonCallStatus {
+            changeStatus { Log.d("AyanLog", it.name) }
+            failure { failure ->
+                Log.d("AyanLog", failure.failureMessage)
+                findViewById<Button>(R.id.retryBtn).setOnClickListener {
+                    failure.reCallApi()
+                }
+            }
+        }
+
 
         ayanApi = AyanApi(
             this,
@@ -266,13 +271,14 @@ class MainActivity : AppCompatActivity() {
                     71,
                     67
                 )
-            ))
+            )
+        )
 
-            /*ayanApi.simpleCall<String>(
-                "LastBillingDate", GetEndUserInquiryHistoryDetailInputModel("WaterBillInquiry")
-            ) {
-                Log.d("SimpleCall", it.toString())
-            }*/
+        /*ayanApi.simpleCall<String>(
+            "LastBillingDate", GetEndUserInquiryHistoryDetailInputModel("WaterBillInquiry")
+        ) {
+            Log.d("SimpleCall", it.toString())
+        }*/
 
 //        ayanApi.call<GetEndUserInquiryHistoryDetailOutputModel>(
 //            "GetEndUserInquiryHistoryDetail",
@@ -287,11 +293,11 @@ class MainActivity : AppCompatActivity() {
 //            }
 //        }
 
-            val ggg =
-        ApiCache.create<GetEndUserInquiryHistoryDetail.Output>(
-            ayanApi,
-            "GetEndUserInquiryHistoryDetail"
-        ).also { it.input = GetEndUserInquiryHistoryDetail.Input("WaterBillInquiry") }
+        val ggg =
+            ApiCache.create<GetEndUserInquiryHistoryDetail.Output>(
+                ayanApi,
+                "GetEndUserInquiryHistoryDetail"
+            ).also { it.input = GetEndUserInquiryHistoryDetail.Input("WaterBillInquiry") }
 
         ggg.getFullApiResult {
             success {
