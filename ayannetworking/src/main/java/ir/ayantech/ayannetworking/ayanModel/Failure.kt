@@ -28,7 +28,7 @@ class Failure(
     val language: Language,
     val failureStatus: Status?,
     val failureMessage: String = getErrorMessage(failureType, language)
-) {
+) : Exception() {
 
     companion object {
         const val NO_CODE_SERVER_ERROR_CODE = "NOCODEFROMSERVER"
@@ -50,7 +50,8 @@ class Failure(
         const val NOT_200_EN = "Internal error."
         const val UNKNOWN_EN = "Unknown error. Please contact support."
 
-        const val NO_INTERNET_CONNECTION_AR = "لا يوجد اتصال بالإنترنت. يرجى التحقق من اتصالك بالإنترنت."
+        const val NO_INTERNET_CONNECTION_AR =
+            "لا يوجد اتصال بالإنترنت. يرجى التحقق من اتصالك بالإنترنت."
         const val TIMEOUT_AR = "انتهى وقت محاولة الاتصال. حاول مرة اخرى."
         const val CANCELED_AR = "ألغى المستخدم العملية."
         const val LOGIN_REQUIRED_AR = "انتهت الجلسة. الرجاد الدخول على الحساب من جديد."
@@ -58,7 +59,7 @@ class Failure(
         const val UNKNOWN_AR = "خطأ غير معروف. يرجى الاتصال بالدعم."
 
         private fun getErrorMessage(failureType: FailureType, language: Language): String =
-            when(language) {
+            when (language) {
                 Language.PERSIAN -> when (failureType) {
                     FailureType.NO_INTERNET_CONNECTION -> NO_INTERNET_CONNECTION_FA
                     FailureType.TIMEOUT -> TIMEOUT_FA
@@ -67,6 +68,7 @@ class Failure(
                     FailureType.NOT_200 -> NOT_200_FA
                     FailureType.UNKNOWN -> UNKNOWN_FA
                 }
+
                 Language.ENGLISH -> when (failureType) {
                     FailureType.NO_INTERNET_CONNECTION -> NO_INTERNET_CONNECTION_EN
                     FailureType.TIMEOUT -> TIMEOUT_EN
@@ -75,6 +77,7 @@ class Failure(
                     FailureType.NOT_200 -> NOT_200_EN
                     FailureType.UNKNOWN -> UNKNOWN_EN
                 }
+
                 Language.ARABIC -> when (failureType) {
                     FailureType.NO_INTERNET_CONNECTION -> NO_INTERNET_CONNECTION_AR
                     FailureType.TIMEOUT -> TIMEOUT_AR
@@ -83,6 +86,7 @@ class Failure(
                     FailureType.NOT_200 -> NOT_200_AR
                     FailureType.UNKNOWN -> UNKNOWN_AR
                 }
+
                 else -> "Error"
             }
     }

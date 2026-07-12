@@ -23,7 +23,7 @@ class SHA256FingerprintInterceptor : Interceptor {
         val response = chain.proceed(chain.request())
         val handshake = chain.connection()?.handshake()
 
-        handshake?.peerCertificates()?.firstOrNull()?.let { certificate ->
+        handshake?.peerCertificates?.firstOrNull()?.let { certificate ->
             if (certificate is X509Certificate) {
                 sha256Fingerprint = certificate.getSha256Fingerprint()
             }

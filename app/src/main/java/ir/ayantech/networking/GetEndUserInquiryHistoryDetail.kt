@@ -1,22 +1,34 @@
 package ir.ayantech.networking
 
-import com.alirezabdn.generator.AyanAPI
+import com.google.gson.annotations.SerializedName
 
-@AyanAPI
+
 class GetEndUserInquiryHistoryDetail {
-    data class Input(val InquiryType: String)
+
+    data class Input(
+        @SerializedName("InquiryType")
+        val inquiryType: String
+    )
 
     data class Output(
-        val InquiryHistory: ArrayList<InquiryModel>,
-        val TotalInquiryHistoryCount: Long
+        @SerializedName("InquiryHistory")
+        val inquiryHistory: ArrayList<InquiryModel>,
+        @SerializedName("TotalInquiryHistoryCount")
+        val totalInquiryHistoryCount: Long
     )
 
     data class InquiryModel(
-        val Description: String,
-        val IsFavorite: Boolean,
-        val IsElectronic: Boolean,
-        val ID: Long,
-        val Type: String,
-        val Value: String
+        @SerializedName("Description")
+        val description: String,
+        @SerializedName("IsFavorite")
+        val isFavorite: Boolean,
+        @SerializedName("IsElectronic")
+        val isElectronic: Boolean,
+        @SerializedName("ID")
+        val id: Long,
+        @SerializedName("Type")
+        val type: String,
+        @SerializedName("Value")
+        val value: String
     )
 }
