@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -13,7 +14,7 @@ android {
     defaultConfig {
         applicationId = "ir.ayantech.networking"
         minSdk = 21
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -40,5 +41,6 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.generator)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.ktor.serialization.json)
     implementation(project(":ayannetworking"))
 }

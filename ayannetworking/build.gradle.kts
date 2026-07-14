@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.serialization)
 }
 android {
     namespace = "ir.ayantech.ayannetworking"
@@ -23,12 +24,22 @@ android {
 
 dependencies {
     implementation(libs.kotlin.stdlib)
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.coroutines.android)
+
     api(platform(libs.okhttp.bom))
     api(libs.okhttp3.okhttp)
     api(libs.okhttp3.logging.interceptor)
     api(libs.retrofit)
     api(libs.gson)
     api(libs.converter.gson)
+
+    //V2 dependenies
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+
+    api(libs.ktor.client.core)
+    api(libs.ktor.client.okhttp)
+    api(libs.ktor.client.content.negotiation)
+    api(libs.ktor.serialization.json)
+    api(libs.ktor.client.logging)
+
 }

@@ -1,6 +1,6 @@
 package ir.ayantech.ayannetworking.v2.api
 
-import ir.ayantech.ayannetworking.ayanModel.Failure
+import ir.ayantech.ayannetworking.v2.helpers.Failure
 import ir.ayantech.ayannetworking.v2.model.ApiCallStatus
 
 sealed class AyanAPIResult<out T, J, K> {

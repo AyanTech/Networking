@@ -2,17 +2,15 @@ package ir.ayantech.ayannetworking.v2.api
 
 
 import android.util.Log
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
-import com.google.gson.JsonPrimitive
-import ir.ayantech.ayannetworking.ayanModel.Failure
+import io.ktor.client.call.body
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.HttpStatusCode
 import ir.ayantech.ayannetworking.ayanModel.FailureRepository
 import ir.ayantech.ayannetworking.ayanModel.FailureType
 import ir.ayantech.ayannetworking.ayanModel.Language
+import ir.ayantech.ayannetworking.v2.helpers.Failure
 import ir.ayantech.ayannetworking.v2.model.ApiCallStatus
 import ir.ayantech.ayannetworking.v2.model.AyanResponse
-import retrofit2.Response
 import java.io.IOException
 import java.io.InterruptedIOException
 import java.net.SocketTimeoutException
@@ -22,24 +20,25 @@ import java.util.concurrent.TimeoutException
 const val TAG = "TAG_NET_ERROR"
 
 
-suspend fun <T> safeApiCall(
+suspend inline fun <reified T> safeApiCall(
     language: Language = Language.PERSIAN,
-    apiCall: suspend () -> Response<AyanResponse<T>>
-): AyanAPIResult<T, ApiCallStatus, Failure> {
+    request: suspend () -> HttpResponse
+): AyanAPIResult<T, ApiCallStatus, Failure>{
     return try {
-        val response = apiCall()
+        val response = request.invoke()
 
-        if (response.isSuccessful) {
-            val body = response.body()
-            val bodyString = response.raw().body.string()
+        if (response.status == HttpStatusCode.OK) {
+            val data = response.body<AyanResponse<T>>()
+            val failureCode = data.status.code ?: response.status.value.toString()
 
-            Log.d("TAG_NETWORKING", "safeApiCall body: $bodyString")
 
-            if (body == null) {
+            Log.d("TAG_NETWORKING", "safeApiCall body: $data")
+
+            if (data.parameters == null) {
                 val failure = Failure(
                     failureRepository = FailureRepository.REMOTE,
                     failureType = FailureType.UNKNOWN,
-                    failureCode = response.code().toString(),
+                    failureCode = failureCode,
                     reCallApi = null,
                     language = Language.PERSIAN,
                     failureStatus = null,
@@ -47,13 +46,10 @@ suspend fun <T> safeApiCall(
                 return AyanAPIResult.error(failure)
             }
 
-            val jsonObject = JsonParser.parseString(bodyString).asJsonObject
-            val jsonElementParameters = jsonObject.get("Parameters")
-            val failureCode = body.status.Code ?: response.code().toString()
 
-            when (body.status.Code) {
-                "G00000" if body.parameters != null -> {
-                    return AyanAPIResult.success(body.parameters!!)
+            when (data.status.code) {
+                "G00000" if data.parameters != null -> {
+                    return AyanAPIResult.success(data.parameters!!)
                 }
 
                 "G00002" -> {
@@ -63,7 +59,7 @@ suspend fun <T> safeApiCall(
                         failureCode = failureCode,
                         reCallApi = null,
                         language = Language.PERSIAN,
-                        failureStatus = body.status,
+                        failureStatus = data.status,
                     )
                     return AyanAPIResult.error(failure)
                 }
@@ -75,8 +71,8 @@ suspend fun <T> safeApiCall(
                         failureCode = failureCode,
                         reCallApi = null,
                         language = Language.PERSIAN,
-                        failureStatus = body.status,
-                        failureMessage = body.status.Description.orEmpty()
+                        failureStatus = data.status,
+                        failureMessage = data.status.description.orEmpty()
                     )
                     return AyanAPIResult.error(failure)
                 }
@@ -99,27 +95,7 @@ suspend fun <T> safeApiCall(
     }
 }
 
-private fun <T> parseServerError(
-    response: Response<T>
-): Failure {
-
-    val rawError = runCatching {
-        response.errorBody()?.string()
-    }.getOrNull()
-
-    Log.d("TAG_NETWORKING", "createHttpError raw error: $rawError")
-
-    return Failure(
-        failureRepository = FailureRepository.LOCAL,
-        failureType = FailureType.UNKNOWN,
-        failureCode = Failure.NO_CODE_SERVER_ERROR_CODE,
-        reCallApi = { },
-        language = Language.PERSIAN,
-        failureStatus = null,
-    )
-}
-
-private fun Throwable.toFailure(language: Language): Failure {
+fun Throwable.toFailure(language: Language): Failure {
 
     Log.d(TAG, "toFailure message: ${this.message}")
 

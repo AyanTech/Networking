@@ -1,39 +1,23 @@
 package ir.ayantech.ayannetworking.v2.api
 
-import ir.ayantech.ayannetworking.ayanModel.Failure
+import android.util.Log
+import io.ktor.client.HttpClient
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import ir.ayantech.ayannetworking.v2.helpers.Failure
 import ir.ayantech.ayannetworking.v2.model.ApiCallStatus
 import ir.ayantech.ayannetworking.v2.model.AyanRequest
+import ir.ayantech.ayannetworking.v2.model.Identity
+import ir.ayantech.ayannetworking.v2.network.KtorClient
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
+
+class APICall(val requirements: AyanApiRequirements) {
+
+    val httpClient: HttpClient by lazy { KtorClient.getClient(requirements) }
 
 
-internal class APICall(private val requirements: AyanApiRequirements) : ApiCallInterface {
-
-    private val okHttpClient: OkHttpClient by lazy {
-        NetworkClientBuilder.buildOkHttpClient(
-            userAgent = requirements.userAgent,
-            timeout = requirements.timeout,
-            setNoProxy = requirements.setNoProxy,
-        )
-    }
-
-    private val retrofitClient: Retrofit by lazy {
-        NetworkClientBuilder.buildRetrofitClient(
-            okHttpClient = okHttpClient,
-            defaultBaseUrl = requirements.baseUrl,
-            gson = NetworkClientBuilder.gson
-        )
-    }
-
-    private val apiInterface: ApiInterface by lazy {
-        retrofitClient.create(ApiInterface::class.java)
-    }
-
-
-    override
-    suspend fun <T, R> post(
+     inline fun <reified T, reified R> post(
         body: T,
         endPint: String
     ): Flow<AyanAPIResult<R, ApiCallStatus, Failure>> {
@@ -43,15 +27,14 @@ internal class APICall(private val requirements: AyanApiRequirements) : ApiCallI
                 append(requirements.baseUrl)
                 append(endPint)
             }
-            val identity = requirements.getUserToken?.invoke()
-            val ayanRequest = AyanRequest<T>(identity = identity, parameters = body)
+            Log.d(TAG, "post: $url")
+            val identity = Identity(token = requirements.getUserToken?.invoke())
+            val ayanRequest = AyanRequest(identity = identity, parameters = body)
 
-            val response = safeApiCall {
-                apiInterface.postAPI<R>(
-                    url = url,
-                    request = ayanRequest,
-                    headers = requirements.headers,
-                )
+            val response = safeApiCall<R> {
+                httpClient.post(url) {
+                    setBody(ayanRequest)
+                }
             }
 
             emit(response)
@@ -61,8 +44,6 @@ internal class APICall(private val requirements: AyanApiRequirements) : ApiCallI
             } else if (response.isSuccess) {
                 emit(AyanAPIResult.changeState(ApiCallStatus.SUCCESSFUL))
             }
-
-
 
             emit(AyanAPIResult.changeState(ApiCallStatus.IDLE))
         }

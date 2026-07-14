@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import ir.ayantech.ayannetworking.ayanModel.Language
 import ir.ayantech.ayannetworking.ayanModel.LogLevel
 import ir.ayantech.ayannetworking.v2.AyanApi
 import ir.ayantech.ayannetworking.v2.api.onChangeState
@@ -30,19 +31,16 @@ class MainActivity : AppCompatActivity() {
         val btn = findViewById<Button>(R.id.btn_fetch)
         txtStatus = findViewById(R.id.txt_status)
 
-        //http://ghabzinohelper.com/webservices/core.svc/help/operations/DonationServiceGerReferrerTypeList
-        //https://application.billingsystem.ayantech.ir/WebServices/Core.svc/DonationServiceGerReferrerTypeList
+      val baseUrl = "URL"
 
-        val ayanAPI: AyanApi = AyanApi
-            .Builder(
-                context = this,
-                "https://application.billingsystem.ayantech.ir/WebServices/Core.svc/"
-            )
+        val ayanAPI: AyanApi = AyanApi.Builder(context = this, baseUrl)
             .setLogLevel(LogLevel.LOG_ALL)
+            .setTimeOutDuration(20.seconds)
+            .setAcceptLanguage(Language.PERSIAN)
+            .setFollowRedirect(true)
             .setInvokeUserToken {
                 return@setInvokeUserToken "user_token"
             }
-            .setTimeOutDuration(20.seconds)
             .build()
 
         btn.setOnClickListener {

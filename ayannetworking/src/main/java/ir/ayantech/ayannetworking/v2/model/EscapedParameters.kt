@@ -1,10 +1,12 @@
 package ir.ayantech.ayannetworking.v2.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class EscapedParameters(
-    @SerializedName("Params")
+    @SerialName("Params")
     val params: String,
-    @SerializedName("MethodName")
+    @SerialName("MethodName")
     var methodName: String? = null
 )

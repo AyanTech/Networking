@@ -2,13 +2,13 @@ package ir.ayantech.ayannetworking.v2
 
 import android.content.Context
 import ir.ayantech.ayannetworking.api.GetUserToken
-import ir.ayantech.ayannetworking.ayanModel.Failure
+import ir.ayantech.ayannetworking.ayanModel.Language
 import ir.ayantech.ayannetworking.ayanModel.LogLevel
 import ir.ayantech.ayannetworking.helper.AppSignatureHelper
 import ir.ayantech.ayannetworking.v2.api.APICall
-import ir.ayantech.ayannetworking.v2.api.ApiCallInterface
 import ir.ayantech.ayannetworking.v2.api.AyanAPIResult
 import ir.ayantech.ayannetworking.v2.api.AyanApiRequirements
+import ir.ayantech.ayannetworking.v2.helpers.Failure
 import ir.ayantech.ayannetworking.v2.helpers.generateUserAgent
 import ir.ayantech.ayannetworking.v2.model.ApiCallStatus
 import kotlinx.coroutines.flow.Flow
@@ -16,14 +16,13 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 
-class AyanApi private constructor(private val requirements: AyanApiRequirements) :
-    ApiCallInterface {
+class AyanApi private constructor(private val requirements: AyanApiRequirements) {
 
-    private val apiCall: APICall by lazy {
+    val apiCall: APICall by lazy {
         APICall(requirements)
     }
 
-    override suspend fun <Body, Response> post(
+    inline fun <reified Body, reified Response> post(
         body: Body,
         endPint: String
     ): Flow<AyanAPIResult<Response, ApiCallStatus, Failure>> {
@@ -43,6 +42,8 @@ class AyanApi private constructor(private val requirements: AyanApiRequirements)
         private var _stringParameters: Boolean = false
         private var _setNoProxy: Boolean = true
         private var _logLevel: LogLevel = LogLevel.LOG_ALL
+        private var _acceptLanguage: Language = Language.PERSIAN
+        private var _followRedirect: Boolean = true
 
 
         /*
@@ -79,19 +80,31 @@ class AyanApi private constructor(private val requirements: AyanApiRequirements)
             return this
         }
 
+        fun setAcceptLanguage(language: Language): Builder {
+            this._acceptLanguage = language
+            return this
+        }
+
+        fun setFollowRedirect(redirect: Boolean): Builder {
+            this._followRedirect = redirect
+            return this
+        }
+
         fun build(): AyanApi {
             val sign = AppSignatureHelper(context).appSignatures.firstOrNull().orEmpty()
             val userAgent = context.generateUserAgent(sign = sign)
             val requirements = AyanApiRequirements(
-                userAgent,
-                baseUrl,
-                _getUserToken,
-                _pathUrl,
-                _timeout,
-                _headers,
-                _stringParameters,
-                _setNoProxy,
-                _logLevel
+                userAgent = userAgent,
+                baseUrl = baseUrl,
+                getUserToken = _getUserToken,
+                pathUrl = _pathUrl,
+                timeout = _timeout,
+                headers = _headers,
+                stringParameters = _stringParameters,
+                setNoProxy = _setNoProxy,
+                logLevel = _logLevel,
+                language = _acceptLanguage,
+                followRedirects = _followRedirect
             )
 
             return AyanApi(requirements = requirements)
@@ -99,5 +112,4 @@ class AyanApi private constructor(private val requirements: AyanApiRequirements)
 
     }
 }
-
 

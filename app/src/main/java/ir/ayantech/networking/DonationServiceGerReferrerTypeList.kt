@@ -1,22 +1,26 @@
 package ir.ayantech.networking
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 class DonationServiceGerReferrerTypeList {
 
-    class Input(
+    @Serializable
+    data class Input(
         val id: Int = 1
     )
 
+    @Serializable
     data class Output(
-        @SerializedName("ReferrerTypeList")
+        @SerialName("ReferrerTypeList")
         val referrerTypeList: List<ReferrerType>
     )
 
-    class ReferrerType(
-        @SerializedName("Name")
+    @Serializable
+    data class ReferrerType(
+        @SerialName("Name")
         val name: String,
-        @SerializedName("ShowName")
+        @SerialName("ShowName")
         val showName: String
 
     )

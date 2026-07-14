@@ -1,8 +1,10 @@
 package ir.ayantech.ayannetworking.v2.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Identity(
-    @SerializedName("Token")
+    @SerialName("Token")
     var token: String?
 )

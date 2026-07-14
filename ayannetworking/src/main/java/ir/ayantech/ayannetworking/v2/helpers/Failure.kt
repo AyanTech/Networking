@@ -1,28 +1,11 @@
-package ir.ayantech.ayannetworking.ayanModel
+package ir.ayantech.ayannetworking.v2.helpers
 
 import ir.ayantech.ayannetworking.api.ReCallApi
+import ir.ayantech.ayannetworking.ayanModel.FailureRepository
+import ir.ayantech.ayannetworking.ayanModel.FailureType
+import ir.ayantech.ayannetworking.ayanModel.Language
+import ir.ayantech.ayannetworking.v2.model.Status
 
-enum class FailureRepository {
-    LOCAL,
-    REMOTE
-}
-
-enum class FailureType {
-    NO_INTERNET_CONNECTION,
-    TIMEOUT,
-    CANCELED,
-    LOGIN_REQUIRED,
-    NOT_200,
-    UNKNOWN
-}
-
-enum class Language(val title: String) {
-    PERSIAN("fa"),
-    ENGLISH("en"),
-    ARABIC("ar")
-}
-
-@Deprecated("Use v2 failure")
 class Failure(
     val failureRepository: FailureRepository,
     val failureType: FailureType,

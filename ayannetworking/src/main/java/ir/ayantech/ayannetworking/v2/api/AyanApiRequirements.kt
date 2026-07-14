@@ -1,6 +1,7 @@
 package ir.ayantech.ayannetworking.v2.api
 
 import ir.ayantech.ayannetworking.api.GetUserToken
+import ir.ayantech.ayannetworking.ayanModel.Language
 import ir.ayantech.ayannetworking.ayanModel.LogLevel
 import kotlin.time.Duration
 
@@ -14,4 +15,6 @@ data class AyanApiRequirements(
     val stringParameters: Boolean,
     val setNoProxy: Boolean,
     val logLevel: LogLevel,
+    val language: Language,
+    val followRedirects: Boolean = true,
 )

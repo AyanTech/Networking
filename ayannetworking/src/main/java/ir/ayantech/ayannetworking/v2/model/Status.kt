@@ -1,18 +1,20 @@
 package ir.ayantech.ayannetworking.v2.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Status(
-    @SerializedName("Code")
+    @SerialName("Code")
     val code: String?,
-    @SerializedName("Description")
+    @SerialName("Description")
     val description: String?,
-    @SerializedName("Hint")
+    @SerialName("Hint")
     val hint: String?,
-    @SerializedName("IsFromCache")
+    @SerialName("IsFromCache")
     val isFromCache: Boolean?,
-    @SerializedName("Retryable")
+    @SerialName("Retryable")
     val retryable: Boolean?,
-    @SerializedName("Type")
+    @SerialName("Type")
     val type: String?
 )

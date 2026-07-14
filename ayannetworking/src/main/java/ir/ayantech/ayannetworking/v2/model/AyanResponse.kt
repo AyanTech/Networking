@@ -1,11 +1,12 @@
 package ir.ayantech.ayannetworking.v2.model
 
-import com.google.gson.annotations.SerializedName
-import ir.ayantech.ayannetworking.ayanModel.Status
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class AyanResponse<T>(
-    @SerializedName("Parameters")
+    @SerialName("Parameters")
     var parameters: T?,
-    @SerializedName("Status")
+    @SerialName("Status")
     var status: Status
 )

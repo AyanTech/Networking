@@ -1,10 +1,12 @@
 package ir.ayantech.ayannetworking.v2.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class AyanRequest<T>(
-    @SerializedName("Identity")
-    var identity: String?,
-    @SerializedName("Parameters")
+    @SerialName("Identity")
+    var identity: Identity?,
+    @SerialName("Parameters")
     var parameters: T?
 )
