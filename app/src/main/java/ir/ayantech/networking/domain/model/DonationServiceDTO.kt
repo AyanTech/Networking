@@ -1,9 +1,9 @@
-package ir.ayantech.networking
+package ir.ayantech.networking.domain.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-class DonationServiceGerReferrerTypeList {
+class DonationServiceDTO {
 
     @Serializable
     data class Input(

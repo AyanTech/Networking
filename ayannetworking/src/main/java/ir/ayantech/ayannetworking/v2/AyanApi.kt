@@ -24,11 +24,11 @@ class AyanApi private constructor(private val requirements: AyanApiRequirements)
 
     inline fun <reified Body, reified Response> post(
         body: Body,
-        endPint: String
+        endPint: String,
+        baseUrl: String? = null,
     ): Flow<AyanAPIResult<Response, ApiCallStatus, Failure>> {
-        return apiCall.post(body = body, endPint = endPint)
+        return apiCall.post(body = body, apiPath = endPint, baseUrl = baseUrl)
     }
-
 
     class Builder(
         private val context: Context,

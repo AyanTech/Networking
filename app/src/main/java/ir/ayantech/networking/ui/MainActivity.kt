@@ -1,4 +1,4 @@
-package ir.ayantech.networking
+package ir.ayantech.networking.ui
 
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +15,8 @@ import ir.ayantech.ayannetworking.v2.api.onChangeState
 import ir.ayantech.ayannetworking.v2.api.onFailure
 import ir.ayantech.ayannetworking.v2.api.onSuccess
 import ir.ayantech.ayannetworking.v2.model.ApiCallStatus
+import ir.ayantech.networking.R
+import ir.ayantech.networking.domain.model.DonationServiceDTO
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
@@ -31,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         val btn = findViewById<Button>(R.id.btn_fetch)
         txtStatus = findViewById(R.id.txt_status)
 
-      val baseUrl = "URL"
+        val baseUrl = "https://application.billingsystem.ayantech.ir/WebServices/Core.svc/"
 
         val ayanAPI: AyanApi = AyanApi.Builder(context = this, baseUrl)
             .setLogLevel(LogLevel.LOG_ALL)
@@ -50,14 +52,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun sampleApiCall(ayanApi: AyanApi) {
-        val input = DonationServiceGerReferrerTypeList.Input()
+        val input = DonationServiceDTO.Input()
         val endpoint = "DonationServiceGerReferrerTypeList"
-
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                ayanApi.post<DonationServiceGerReferrerTypeList.Input, DonationServiceGerReferrerTypeList.Output>(
+                ayanApi.post<DonationServiceDTO.Input, DonationServiceDTO.Output>(
                     body = input,
-                    endPint = endpoint
+                    endPint = endpoint,
                 ).collect { ayanAPIResult ->
                     ayanAPIResult.onSuccess { response ->
                         txtStatus?.text =

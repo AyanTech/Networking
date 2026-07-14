@@ -16,16 +16,15 @@ class APICall(val requirements: AyanApiRequirements) {
 
     val httpClient: HttpClient by lazy { KtorClient.getClient(requirements) }
 
-
      inline fun <reified T, reified R> post(
         body: T,
-        endPint: String
-    ): Flow<AyanAPIResult<R, ApiCallStatus, Failure>> {
-        return flow {
+        apiPath: String,
+        baseUrl: String? = null
+    ): Flow<AyanAPIResult<R, ApiCallStatus, Failure>> = flow {
             emit(AyanAPIResult.changeState(ApiCallStatus.LOADING))
             val url = buildString {
-                append(requirements.baseUrl)
-                append(endPint)
+                append(baseUrl ?: requirements.baseUrl)
+                append(apiPath)
             }
             Log.d(TAG, "post: $url")
             val identity = Identity(token = requirements.getUserToken?.invoke())
@@ -47,6 +46,4 @@ class APICall(val requirements: AyanApiRequirements) {
 
             emit(AyanAPIResult.changeState(ApiCallStatus.IDLE))
         }
-
-    }
 }

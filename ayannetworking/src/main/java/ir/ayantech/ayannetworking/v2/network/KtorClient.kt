@@ -29,19 +29,9 @@ object KtorClient {
                 contentType(ContentType.Application.Json)
                 accept(ContentType.Application.Json)
                 headers.apply {
-                    append(
-                        HttpHeaders.UserAgent,
-                        requirements.userAgent
-                    )
-                    append(
-                        HttpHeaders.AcceptLanguage,
-                        requirements.language.title
-                    )
-
-                    append(
-                        HttpHeaders.Authorization,
-                        requirements.getUserToken?.invoke().orEmpty()
-                    )
+                    append(HttpHeaders.UserAgent, requirements.userAgent)
+                    append(HttpHeaders.AcceptLanguage, requirements.language.title)
+                    append(HttpHeaders.Authorization, requirements.getUserToken?.invoke().orEmpty())
                 }
 
             }
