@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class AyanRequest<T>(
     @SerializedName("Identity")
-    var identity: Any?,
+    var identity: String?,
     @SerializedName("Parameters")
     var parameters: T?
 )

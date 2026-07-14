@@ -5,8 +5,8 @@ import ir.ayantech.ayannetworking.v2.model.ApiCallStatus
 import kotlinx.coroutines.flow.Flow
 
 interface ApiCallInterface {
-    suspend fun <Body, Response> post(
-        body: Body,
+    suspend fun <T, R> post(
+        body: T,
         endPint: String
-    ): Flow<AyanAPIResult<Response, ApiCallStatus, Failure>>
+    ): Flow<AyanAPIResult<R, ApiCallStatus, Failure>>
 }

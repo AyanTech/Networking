@@ -319,7 +319,8 @@ class AyanApi(
                                     "G00002" -> ayanCallStatus.dispatchFail(
                                         Failure(
                                             FailureRepository.REMOTE,
-                                            FailureType.LOGIN_REQUIRED, "G00002",
+                                            FailureType.LOGIN_REQUIRED,
+                                            "G00002",
                                             wrappedPackage.reCallApi,
                                             language,
                                             wrappedPackage.response?.Status

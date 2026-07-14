@@ -39,5 +39,6 @@ dependencies {
     implementation(libs.kotlin.stdlib)
     implementation(libs.androidx.appcompat)
     implementation(libs.generator)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(project(":ayannetworking"))
 }

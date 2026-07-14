@@ -1,7 +1,7 @@
 package ir.ayantech.ayannetworking.v2.api
 
 import ir.ayantech.ayannetworking.v2.model.AyanRequest
-import okhttp3.ResponseBody
+import ir.ayantech.ayannetworking.v2.model.AyanResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.HeaderMap
@@ -10,11 +10,12 @@ import retrofit2.http.Url
 
 interface ApiInterface {
     @POST
-    suspend fun postAPI(
+    @JvmSuppressWildcards
+    suspend fun <R> postAPI(
         @Url url: String?,
-        @Body body: AyanRequest<*>?,
+        @Body request: AyanRequest<*>?,
         @HeaderMap headers: MutableMap<String, String>
-    ): Response<ResponseBody?>?
+    ): Response<AyanResponse<R>>
 
 }
 

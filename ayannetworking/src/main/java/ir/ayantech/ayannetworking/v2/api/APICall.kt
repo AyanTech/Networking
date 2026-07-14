@@ -33,27 +33,38 @@ internal class APICall(private val requirements: AyanApiRequirements) : ApiCallI
 
 
     override
-    suspend fun <Body, Response> post(
-        body: Body,
+    suspend fun <T, R> post(
+        body: T,
         endPint: String
-    ): Flow<AyanAPIResult<Response, ApiCallStatus, Failure>> {
+    ): Flow<AyanAPIResult<R, ApiCallStatus, Failure>> {
         return flow {
-
-
+            emit(AyanAPIResult.changeState(ApiCallStatus.LOADING))
             val url = buildString {
                 append(requirements.baseUrl)
                 append(endPint)
             }
             val identity = requirements.getUserToken?.invoke()
-            val ayanRequest = AyanRequest(identity = identity, body)
+            val ayanRequest = AyanRequest<T>(identity = identity, parameters = body)
+
+            val response = safeApiCall {
+                apiInterface.postAPI<R>(
+                    url = url,
+                    request = ayanRequest,
+                    headers = requirements.headers,
+                )
+            }
+
+            emit(response)
+
+            if (response.isError) {
+                emit(AyanAPIResult.changeState(ApiCallStatus.FAILED))
+            } else if (response.isSuccess) {
+                emit(AyanAPIResult.changeState(ApiCallStatus.SUCCESSFUL))
+            }
 
 
-            val response = apiInterface.postAPI(
-                url = url,
-                body = ayanRequest,
-                headers = requirements.headers
-            )
-            //TODO use safeAPICall and emit response: state, success, error
+
+            emit(AyanAPIResult.changeState(ApiCallStatus.IDLE))
         }
 
     }
