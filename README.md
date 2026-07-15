@@ -1,3 +1,5 @@
+[![](https://jitpack.io/v/AyanTech/Networking.svg)](https://jitpack.io/#AyanTech/Networking)
+
 # Ayan Networking v2
 
 `v2` is the Ktor-based API client in the `ayannetworking` Android library. It sends
@@ -17,9 +19,24 @@ the legacy networking implementation.
 
 When using the module from this repository, add it to the consuming Android module:
 
+Add it in your `settings.gradle.kts` at the end of repositories:
+
+```kotlin
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url = uri("https://jitpack.io") }
+    }
+}
+```
+
+Then add the dependency:
+
 ```kotlin
 dependencies {
-    implementation("com.github.AyanTech:ayan-networking:LATEST_VERSION")
+    implementation("com.github.AyanTech:Networking:LATEST_VERSION")
 }
 ```
 
