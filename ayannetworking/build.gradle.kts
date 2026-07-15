@@ -19,8 +19,8 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     testOptions {
         unitTests.isReturnDefaultValues = true
@@ -63,7 +63,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "com.github.AyanTech"
             artifactId = "ayan-networking"
-            version = "2.0.1"
+            version = "2.0.2"
 
             afterEvaluate {
                 from(components["release"])
