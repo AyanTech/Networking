@@ -19,6 +19,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+    }
 
 }
 
@@ -41,5 +44,7 @@ dependencies {
     api(libs.ktor.client.content.negotiation)
     api(libs.ktor.serialization.json)
     api(libs.ktor.client.logging)
+
+    testImplementation(libs.junit)
 
 }
