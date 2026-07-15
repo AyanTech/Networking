@@ -19,7 +19,7 @@ When using the module from this repository, add it to the consuming Android modu
 
 ```kotlin
 dependencies {
-    implementation(project(":ayannetworking"))
+    implementation("com.github.AyanTech:ayan-networking:LATEST_VERSION")
 }
 ```
 

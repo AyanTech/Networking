@@ -1,6 +1,9 @@
+import org.gradle.api.publish.maven.MavenPublication
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.serialization)
+    id("maven-publish")
 }
 android {
     namespace = "ir.ayantech.ayannetworking"
@@ -21,6 +24,12 @@ android {
     }
     testOptions {
         unitTests.isReturnDefaultValues = true
+    }
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
     }
 
 }
@@ -47,4 +56,24 @@ dependencies {
 
     testImplementation(libs.junit)
 
+}
+
+publishing {
+    publications {
+        register<MavenPublication>("release") {
+            groupId = "com.github.AyanTech"
+            artifactId = "ayan-networking"
+            version = "2.0.0"
+
+            afterEvaluate {
+                from(components["release"])
+            }
+
+            pom {
+                name.set("Ayan Networking")
+                description.set("Networking library for Ayan Android applications")
+                url.set("https://github.com/AyanTech/Networking")
+            }
+        }
+    }
 }
