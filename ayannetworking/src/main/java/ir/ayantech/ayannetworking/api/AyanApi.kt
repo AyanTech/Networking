@@ -113,7 +113,7 @@ class AyanApi(
     }
 
     fun cancelCalls() {
-        okHttpClient.dispatcher().cancelAll()
+        okHttpClient.dispatcher.cancelAll()
     }
 
     inline fun <reified GenericOutput> ayanCall(
@@ -266,7 +266,7 @@ class AyanApi(
                                     }
                                 }
                                 if (logLevel == LogLevel.LOG_ALL)
-                                    Log.d("AyanProtocol", response.raw().protocol().name)
+                                    Log.d("AyanProtocol", response.raw().protocol.name)
                                 val jsonObject = JsonParser.parseString(rawResponse).asJsonObject
                                 var parameters: GenericOutput? = null
                                 try {
@@ -319,7 +319,8 @@ class AyanApi(
                                     "G00002" -> ayanCallStatus.dispatchFail(
                                         Failure(
                                             FailureRepository.REMOTE,
-                                            FailureType.LOGIN_REQUIRED, "G00002",
+                                            FailureType.LOGIN_REQUIRED,
+                                            "G00002",
                                             wrappedPackage.reCallApi,
                                             language,
                                             wrappedPackage.response?.Status

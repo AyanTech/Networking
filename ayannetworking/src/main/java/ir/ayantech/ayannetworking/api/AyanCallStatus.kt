@@ -87,10 +87,12 @@ class AyanCallStatus<T> private constructor() {
     }
 }
 
+@Deprecated("Use v2 ApiCallStatus")
 enum class CallingState {
     NOT_USED, LOADING, FAILED, SUCCESSFUL
 }
 
+@Deprecated("use v2 AyanAPIResult")
 class AyanCommonCallStatus private constructor() {
 
     companion object {
