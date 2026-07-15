@@ -42,8 +42,8 @@ dependencies {
     implementation(libs.generator)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.ktor.serialization.json)
-    implementation(project(":ayannetworking"))
-
+//    implementation(project(":ayannetworking"))
+    implementation(libs.ayan.networking)
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.android)
 
