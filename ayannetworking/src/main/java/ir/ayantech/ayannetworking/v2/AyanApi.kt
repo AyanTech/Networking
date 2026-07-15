@@ -8,13 +8,11 @@ import ir.ayantech.ayannetworking.helper.AppSignatureHelper
 import ir.ayantech.ayannetworking.v2.api.APICall
 import ir.ayantech.ayannetworking.v2.api.AyanAPIResult
 import ir.ayantech.ayannetworking.v2.api.AyanApiRequirements
-import ir.ayantech.ayannetworking.v2.helpers.Failure
 import ir.ayantech.ayannetworking.v2.helpers.generateUserAgent
 import ir.ayantech.ayannetworking.v2.model.ApiCallStatus
 import kotlinx.coroutines.flow.Flow
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
-
 
 class AyanApi private constructor(private val requirements: AyanApiRequirements) {
 
@@ -26,7 +24,7 @@ class AyanApi private constructor(private val requirements: AyanApiRequirements)
         body: Body,
         endPint: String,
         baseUrl: String? = null,
-    ): Flow<AyanAPIResult<Response, ApiCallStatus, Failure>> {
+    ): Flow<AyanAPIResult<Response, ApiCallStatus, Exception>> {
         return apiCall.post(body = body, apiPath = endPint, baseUrl = baseUrl)
     }
 

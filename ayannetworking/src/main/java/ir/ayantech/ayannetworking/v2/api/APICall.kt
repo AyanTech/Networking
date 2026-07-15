@@ -4,7 +4,6 @@ import android.util.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import ir.ayantech.ayannetworking.v2.helpers.Failure
 import ir.ayantech.ayannetworking.v2.model.ApiCallStatus
 import ir.ayantech.ayannetworking.v2.model.AyanRequest
 import ir.ayantech.ayannetworking.v2.model.Identity
@@ -20,7 +19,7 @@ class APICall(val requirements: AyanApiRequirements) {
         body: T,
         apiPath: String,
         baseUrl: String? = null
-    ): Flow<AyanAPIResult<R, ApiCallStatus, Failure>> = flow {
+    ): Flow<AyanAPIResult<R, ApiCallStatus, Exception>> = flow {
             emit(AyanAPIResult.changeState(ApiCallStatus.LOADING))
             val url = buildString {
                 append(baseUrl ?: requirements.baseUrl)

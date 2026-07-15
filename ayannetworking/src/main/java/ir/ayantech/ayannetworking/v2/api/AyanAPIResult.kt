@@ -1,13 +1,12 @@
 package ir.ayantech.ayannetworking.v2.api
 
-import ir.ayantech.ayannetworking.v2.helpers.Failure
 import ir.ayantech.ayannetworking.v2.model.ApiCallStatus
 
 sealed class AyanAPIResult<out T, J, K> {
-    data class Success<T>(val value: T) : AyanAPIResult<T, ApiCallStatus, Failure>()
-    data class ChangeState<T>(val state: ApiCallStatus) : AyanAPIResult<T, ApiCallStatus, Failure>()
-    data class Error<T>(val ayanFailure: Failure) :
-        AyanAPIResult<T, ApiCallStatus, Failure>()
+    data class Success<T>(val value: T) : AyanAPIResult<T, ApiCallStatus, Exception>()
+    data class ChangeState<T>(val state: ApiCallStatus) : AyanAPIResult<T, ApiCallStatus, Exception>()
+    data class Error<T>(val ayanFailure: Exception) :
+        AyanAPIResult<T, ApiCallStatus, Exception>()
 
     val isSuccess: Boolean
         get() = this is Success
@@ -25,22 +24,22 @@ sealed class AyanAPIResult<out T, J, K> {
         }
 
         fun <T> error(
-            failure: Failure,
-        ): AyanAPIResult<T, ApiCallStatus, Failure> {
+            failure: Exception,
+        ): AyanAPIResult<T, ApiCallStatus, Exception> {
             return Error(ayanFailure = failure)
         }
 
-        fun <T> changeState(state: ApiCallStatus): AyanAPIResult<T, ApiCallStatus, Failure> {
+        fun <T> changeState(state: ApiCallStatus): AyanAPIResult<T, ApiCallStatus, Exception> {
             return ChangeState(state)
         }
     }
 
 }
 
-inline fun <T, R> AyanAPIResult<T, ApiCallStatus, Failure>.fold(
+inline fun <T, R> AyanAPIResult<T, ApiCallStatus, Exception>.fold(
     onSuccess: (T) -> R,
     onChangeState: (ApiCallStatus) -> R,
-    onError: (failure: Failure?) -> R,
+    onError: (failure: Exception?) -> R,
 ): R {
     return when (this) {
         is AyanAPIResult.Success -> onSuccess(value)
@@ -60,7 +59,7 @@ inline fun <T, J, K> AyanAPIResult<T, J, K>.onSuccess(action: (t: T) -> Unit): A
     return this
 }
 
-inline fun <T, J, K> AyanAPIResult<T, J, K>.onFailure(action: (ayanFailure: Failure) -> Unit): AyanAPIResult<T, J, K> {
+inline fun <T, J, K> AyanAPIResult<T, J, K>.onFailure(action: (ayanFailure: Exception) -> Unit): AyanAPIResult<T, J, K> {
     if (isError) {
         (this as? AyanAPIResult.Error)?.let {
             action.invoke(ayanFailure)

@@ -1,6 +1,5 @@
 package ir.ayantech.ayannetworking.v2.api
 
-
 import android.util.Log
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
@@ -19,11 +18,10 @@ import java.util.concurrent.TimeoutException
 
 const val TAG = "TAG_NET_ERROR"
 
-
 suspend inline fun <reified T> safeApiCall(
     language: Language = Language.PERSIAN,
     request: suspend () -> HttpResponse
-): AyanAPIResult<T, ApiCallStatus, Failure>{
+): AyanAPIResult<T, ApiCallStatus, Exception> {
     return try {
         val response = request.invoke()
 
