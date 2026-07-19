@@ -1,9 +1,10 @@
 package ir.ayantech.ayannetworking.v2.api
 
-import ir.ayantech.ayannetworking.ayanModel.FailureRepository
-import ir.ayantech.ayannetworking.ayanModel.FailureType
-import ir.ayantech.ayannetworking.ayanModel.Language
-import ir.ayantech.ayannetworking.v2.helpers.Failure
+import ir.ayantech.networking.ayanModel.FailureRepository
+import ir.ayantech.networking.ayanModel.FailureType
+import ir.ayantech.networking.ayanModel.Language
+import ir.ayantech.networking.v2.api.toFailure
+import ir.ayantech.networking.v2.helpers.Failure
 import java.io.IOException
 import java.io.InterruptedIOException
 import java.net.SocketTimeoutException

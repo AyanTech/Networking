@@ -1,6 +1,11 @@
 package ir.ayantech.ayannetworking.v2.api
 
-import ir.ayantech.ayannetworking.v2.model.ApiCallStatus
+import ir.ayantech.networking.v2.api.AyanAPIResult
+import ir.ayantech.networking.v2.api.fold
+import ir.ayantech.networking.v2.api.onChangeState
+import ir.ayantech.networking.v2.api.onFailure
+import ir.ayantech.networking.v2.api.onSuccess
+import ir.ayantech.networking.v2.model.ApiCallStatus
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertSame
