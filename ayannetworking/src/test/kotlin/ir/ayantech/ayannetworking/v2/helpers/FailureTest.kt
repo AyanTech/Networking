@@ -1,8 +1,9 @@
 package ir.ayantech.ayannetworking.v2.helpers
 
-import ir.ayantech.ayannetworking.ayanModel.FailureRepository
-import ir.ayantech.ayannetworking.ayanModel.FailureType
-import ir.ayantech.ayannetworking.ayanModel.Language
+import ir.ayantech.networking.ayanModel.FailureRepository
+import ir.ayantech.networking.ayanModel.FailureType
+import ir.ayantech.networking.ayanModel.Language
+import ir.ayantech.networking.v2.helpers.Failure
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
