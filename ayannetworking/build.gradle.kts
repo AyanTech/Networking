@@ -63,7 +63,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "com.ayantech.networking"
             artifactId = "ayan-networking"
-            version = "2.0.3"
+            version = "2.0.4"
 
             afterEvaluate {
                 from(components["release"])
