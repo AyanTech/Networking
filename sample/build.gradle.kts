@@ -39,7 +39,6 @@ android {
 dependencies {
     implementation(libs.kotlin.stdlib)
     implementation(libs.androidx.appcompat)
-    implementation(libs.generator)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.ktor.serialization.json)
     implementation(project(":ayannetworking"))

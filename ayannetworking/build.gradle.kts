@@ -36,15 +36,6 @@ android {
 
 dependencies {
     implementation(libs.kotlin.stdlib)
-
-    api(platform(libs.okhttp.bom))
-    api(libs.okhttp3.okhttp)
-    api(libs.okhttp3.logging.interceptor)
-    api(libs.retrofit)
-    api(libs.gson)
-    api(libs.converter.gson)
-
-    //V2 dependenies
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
 
