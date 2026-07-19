@@ -6,7 +6,7 @@ plugins {
     id("maven-publish")
 }
 android {
-    namespace = "ir.ayantech.ayannetworking"
+    namespace = "com.ayantech.networking"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
@@ -61,7 +61,7 @@ dependencies {
 publishing {
     publications {
         register<MavenPublication>("release") {
-            groupId = "com.github.AyanTech"
+            groupId = "com.ayantech.networking"
             artifactId = "ayan-networking"
             version = "2.0.2"
 
