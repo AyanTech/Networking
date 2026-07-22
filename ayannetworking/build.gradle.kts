@@ -39,11 +39,11 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
 
+    implementation(libs.ktor.serialization.json)
+    implementation(libs.ktor.client.logging)
     api(libs.ktor.client.core)
     api(libs.ktor.client.okhttp)
     api(libs.ktor.client.content.negotiation)
-    api(libs.ktor.serialization.json)
-    api(libs.ktor.client.logging)
 
     testImplementation(libs.junit)
 
@@ -54,7 +54,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "com.ayantech.networking"
             artifactId = "ayan-networking"
-            version = "2.0.4"
+            version = "2.0.5"
 
             afterEvaluate {
                 from(components["release"])
