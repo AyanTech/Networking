@@ -203,8 +203,11 @@ A response is successful only when all the following are true:
 - `Status.Code` is `G00000`.
 - `Parameters` is not `null`.
 
-`G00002` is mapped to `LOGIN_REQUIRED`. Other service codes are mapped to an unknown
-remote failure and preserve `Status.Description` as the failure message.
+The client checks `Status.Code` before decoding `Parameters`. `G00002` is mapped to
+`LOGIN_REQUIRED`. Other service codes are mapped to an unknown remote failure.
+For every service failure, including `Parameters = null`, the complete status and a
+nonblank `Status.Description` are retained in `Failure`. HTTP errors carrying a
+service envelope preserve the same message; other HTTP errors use a transport fallback.
 
 ## Failures
 
@@ -237,8 +240,8 @@ result.onFailure { exception ->
 
 - Only POST requests are exposed.
 - Only HTTP `200 OK` is treated as a valid transport response.
-- `Parameters = null` is treated as a failure, including for otherwise successful
-  operations with no response body.
+- A successful status with `Parameters = null` is still treated as a failure,
+  including for operations with no response body.
 - `setCustomHeaders`, `setPathUrl`, and `setNoProxyMode` store configuration but the
   current Ktor client does not apply it.
 - `setFollowRedirect` stores configuration, but redirects are currently always

@@ -21,7 +21,7 @@ object KtorClient {
 
     fun getClient(requirements: AyanApiRequirements): HttpClient {
         return HttpClient(OkHttp) {
-            expectSuccess = true
+            expectSuccess = false
             followRedirects = true
 
             defaultRequest {

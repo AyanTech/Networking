@@ -9,11 +9,38 @@ import ir.ayantech.networking.ayanModel.Language
 import ir.ayantech.networking.v2.helpers.Failure
 import ir.ayantech.networking.v2.model.ApiCallStatus
 import ir.ayantech.networking.v2.model.AyanResponse
+import ir.ayantech.networking.v2.model.Status
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.decodeFromJsonElement
 import java.io.IOException
 import java.io.InterruptedIOException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.concurrent.TimeoutException
+
+@PublishedApi
+internal val responseJson = Json {
+    ignoreUnknownKeys = true
+    isLenient = true
+    explicitNulls = false
+}
+
+@PublishedApi
+internal fun remoteFailure(
+    type: FailureType,
+    code: String,
+    language: Language,
+    status: Status?,
+): Failure {
+    val fallback = Failure(FailureRepository.REMOTE, type, code, language, status)
+    val description = status?.description?.takeIf(String::isNotBlank) ?: return fallback
+    return Failure(FailureRepository.REMOTE, type, code, language, status, description)
+}
 
 suspend inline fun <reified T> safeApiCall(
     language: Language = Language.PERSIAN,
@@ -21,63 +48,47 @@ suspend inline fun <reified T> safeApiCall(
 ): AyanAPIResult<T, ApiCallStatus, Exception> {
     return try {
         val response = request.invoke()
-
-        if (response.status == HttpStatusCode.OK) {
-            val data = response.body<AyanResponse<T>>()
-            val failureCode = data.status.code ?: response.status.value.toString()
-
-            if (data.parameters == null) {
-                val failure = Failure(
-                    failureRepository = FailureRepository.REMOTE,
-                    failureType = FailureType.UNKNOWN,
-                    failureCode = failureCode,
-                    language = Language.PERSIAN,
-                    failureStatus = null,
+        currentCoroutineContext().ensureActive()
+        if (response.status != HttpStatusCode.OK) {
+            val status = runCatching {
+                response.body<AyanResponse<JsonElement>>().status
+            }.getOrNull()
+            currentCoroutineContext().ensureActive()
+            return AyanAPIResult.error(
+                remoteFailure(
+                    FailureType.NOT_200,
+                    status?.code ?: response.status.value.toString(),
+                    language,
+                    status,
                 )
-                return AyanAPIResult.error(failure)
-            }
-
-
-            when (data.status.code) {
-                "G00000" if data.parameters != null -> {
-                    return AyanAPIResult.success(data.parameters!!)
-                }
-
-                "G00002" -> {
-                    val failure = Failure(
-                        failureRepository = FailureRepository.REMOTE,
-                        failureType = FailureType.LOGIN_REQUIRED,
-                        failureCode = failureCode,
-                        language = Language.PERSIAN,
-                        failureStatus = data.status,
-                    )
-                    return AyanAPIResult.error(failure)
-                }
-
-                else -> {
-                    val failure = Failure(
-                        failureRepository = FailureRepository.REMOTE,
-                        failureType = FailureType.UNKNOWN,
-                        failureCode = failureCode,
-                        language = Language.PERSIAN,
-                        failureStatus = data.status,
-                        failureMessage = data.status.description.orEmpty()
-                    )
-                    return AyanAPIResult.error(failure)
-                }
-            }
-
-        } else {
-            val failure = Failure(
-                failureRepository = FailureRepository.REMOTE,
-                failureType = FailureType.NOT_200,
-                failureCode = Failure.APP_INTERNAL_ERROR_CODE,
-                language = Language.PERSIAN,
-                failureStatus = null,
             )
-            AyanAPIResult.error(failure)
         }
+
+        val data = response.body<AyanResponse<JsonElement>>()
+        val status = data.status
+        val failureCode = status.code ?: response.status.value.toString()
+
+        if (status.code != "G00000") {
+            val failureType =
+                if (status.code == "G00002") FailureType.LOGIN_REQUIRED else FailureType.UNKNOWN
+            return AyanAPIResult.error(remoteFailure(failureType, failureCode, language, status))
+        }
+
+        val parameters = data.parameters
+        if (parameters == null || parameters == JsonNull) {
+            return AyanAPIResult.error(
+                remoteFailure(FailureType.UNKNOWN, failureCode, language, status)
+            )
+        }
+
+        val value = responseJson.decodeFromJsonElement<T>(parameters)
+        currentCoroutineContext().ensureActive()
+        return AyanAPIResult.success(value)
+
+    } catch (cancellation: CancellationException) {
+        throw cancellation
     } catch (throwable: Throwable) {
+        currentCoroutineContext().ensureActive()
         val failure = throwable.toFailure(language = language)
         AyanAPIResult.error(failure)
     }
