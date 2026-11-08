@@ -73,14 +73,7 @@ suspend inline fun <reified T> safeApiCall(
             return Result.failure(remoteFailure(failureType, failureCode, language, status))
         }
 
-        val parameters = data.parameters
-        if (parameters == null || parameters == JsonNull) {
-            return Result.failure(
-                remoteFailure(FailureType.UNKNOWN, failureCode, language, status)
-            )
-        }
-
-        val value = responseJson.decodeFromJsonElement<T>(parameters)
+        val value = responseJson.decodeFromJsonElement<T>(data.parameters ?: JsonNull)
         currentCoroutineContext().ensureActive()
         Result.success(value)
 

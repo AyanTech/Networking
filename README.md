@@ -181,7 +181,11 @@ A response is successful only when all the following are true:
 
 - The HTTP status is `200 OK`.
 - `Status.Code` is `G00000`.
-- `Parameters` is not `null`.
+- `Parameters` can be decoded as the requested response type.
+
+For a successful status with null or omitted `Parameters`, use a nullable response
+type such as `ProfileResponse?` to receive `Result.success(null)`. A non-nullable
+response type that requires a payload returns a decoding failure in this case.
 
 The client checks `Status.Code` before decoding `Parameters`. `G00002` is mapped to
 `LOGIN_REQUIRED`. Other service codes are mapped to an unknown remote failure.
@@ -219,8 +223,6 @@ result.onFailure { exception ->
 
 - Only POST requests are exposed.
 - Only HTTP `200 OK` is treated as a valid transport response.
-- A successful status with `Parameters = null` is still treated as a failure,
-  including for operations with no response body.
 - `setCustomHeaders`, `setPathUrl`, and `setNoProxyMode` store configuration but the
   current Ktor client does not apply it.
 - `setFollowRedirect` stores configuration, but redirects are currently always
