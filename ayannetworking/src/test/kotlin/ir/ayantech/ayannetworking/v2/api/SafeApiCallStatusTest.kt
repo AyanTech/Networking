@@ -16,7 +16,9 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertSame
+import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
@@ -104,6 +106,45 @@ class SafeApiCallStatusTest {
 
         // Assert
         assertEquals("ready", result.getOrThrow().value)
+    }
+
+    @Test
+    fun acceptsNullParametersForNullableResponse() = runBlocking {
+        // Arrange
+        responseBody =
+            """{"Parameters":null,"Status":{"Code":"G00000"}}"""
+
+        // Act
+        val result = apiCall.post<Payload, Payload?>(body = Payload("request"), apiPath = "")
+
+        // Assert
+        assertNull(result.getOrThrow())
+    }
+
+    @Test
+    fun acceptsOmittedParametersForNullableResponse() = runBlocking {
+        // Arrange
+        responseBody =
+            """{"Status":{"Code":"G00000"}}"""
+
+        // Act
+        val result = apiCall.post<Payload, Payload?>(body = Payload("request"), apiPath = "")
+
+        // Assert
+        assertNull(result.getOrThrow())
+    }
+
+    @Test
+    fun rejectsNullParametersWhenResponseRequiresPayload() = runBlocking {
+        // Arrange
+        responseBody =
+            """{"Parameters":null,"Status":{"Code":"G00000"}}"""
+
+        // Act
+        val result = call()
+
+        // Assert
+        assertTrue(result.isFailure)
     }
 
     @Test
